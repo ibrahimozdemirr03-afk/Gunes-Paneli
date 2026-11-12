@@ -1,0 +1,32 @@
+name: APK derle
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  derle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Zip dosyasini ac
+        run: unzip -o GunesPaneliApp.zip
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: APK derle
+        working-directory: GunesPaneliApp
+        run: gradle assembleRelease --no-daemon --stacktrace
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: GunesPaneli-APK
+          path: GunesPaneliApp/app/build/outputs/apk/release/*.apk
